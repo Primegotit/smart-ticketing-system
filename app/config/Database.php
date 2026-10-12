@@ -15,8 +15,8 @@ class Database {
         try {
             $dsn = "mysql:host={$this->host};port={$this->port};dbname={$this->db_name}";
             $this->conn = new \PDO($dsn, $this->username, $this->password);
-            
-            // Set PDO attributes for proper error handling
+            //$dsn -> data source name
+            // Set PDO attributes for proper error handling , the \ before the PDO (\PDO) shows that this class is in another file 
             $this->conn->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
             
             // Set character encoding

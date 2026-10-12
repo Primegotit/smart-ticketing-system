@@ -176,25 +176,24 @@ class User {
     }
 
     public function delete($id) {
-        // First check if user has any events or tickets
+        // Prevent deletion if user has any events (organizer)
         $eventModel = new Event();
         $userEvents = $eventModel->getByOrganizer($id);
-        
         if (!empty($userEvents)) {
-            return false; // Can't delete user with events
+            // Cannot delete user with organized events
+            return false;
         }
-        
+        // Delete tickets associated with user (including scans)
         $ticketModel = new Ticket();
-        $userTickets = $ticketModel->getByUserId($id);
-        
-        if (!empty($userTickets)) {
-            return false; // Can't delete user with tickets
+        $ticketDeleted = $ticketModel->deleteByUserId($id);
+        if (!$ticketDeleted) {
+            error_log("Failed to delete tickets for user ID $id");
+            return false;
         }
-        
+        // Delete user record
         $sql = "DELETE FROM users WHERE id = :id";
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':id', $id);
-        
         try {
             return $stmt->execute();
         } catch (\PDOException $e) {
@@ -202,6 +201,7 @@ class User {
             return false;
         }
     }
+
 
     public function createByAdmin($data) {
         $sql = "INSERT INTO users (first_name, last_name, email, password, role, status) 

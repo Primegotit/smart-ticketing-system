@@ -82,6 +82,30 @@ class Ticket {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    // New method to delete all tickets and related scans for a given user ID
+    public function deleteByUserId($userId) {
+        // First delete scans for tickets belonging to the user
+        $sqlScans = "DELETE ts FROM ticket_scans ts JOIN tickets t ON ts.ticket_id = t.id WHERE t.user_id = :user_id";
+        $stmtScans = $this->db->prepare($sqlScans);
+        $stmtScans->bindParam(':user_id', $userId);
+        try {
+            $stmtScans->execute();
+        } catch (\PDOException $e) {
+            error_log("Error deleting ticket scans for user $userId: " . $e->getMessage());
+            // Continue to attempt deleting tickets even if scans deletion fails
+        }
+        // Then delete tickets
+        $sql = "DELETE FROM tickets WHERE user_id = :user_id";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':user_id', $userId);
+        try {
+            return $stmt->execute();
+        } catch (\PDOException $e) {
+            error_log("Error deleting tickets for user $userId: " . $e->getMessage());
+            return false;
+        }
+    }
+
 
     public function getByEventId($eventId) {
         $sql = "SELECT t.*, u.first_name, u.last_name, u.email 

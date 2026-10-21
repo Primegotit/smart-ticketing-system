@@ -13,9 +13,18 @@
         You don't have any tickets yet. <a href="<?= BASE_URL ?>/events">Browse events</a> to purchase tickets.
     </div>
 <?php else: ?>
+    <div data-list-cards data-search-placeholder="Search by event, venue, ticket number or code..."
+         data-sorts='[{"key":"eventdate","label":"Event date","type":"date"},{"key":"title","label":"Event name","type":"text"},{"key":"venue","label":"Venue","type":"text"},{"key":"ticketid","label":"Ticket number","type":"number"},{"key":"status","label":"Status","type":"text"}]'
+         data-filters='[{"key":"status","label":"Status"},{"key":"title","label":"Event"},{"key":"eventdate","label":"Event date","range":true}]'>
     <div class="row">
         <?php foreach ($tickets as $ticket): ?>
-            <div class="col-md-6 mb-4">
+            <div class="col-md-6 mb-4" data-item
+                 data-title="<?= htmlspecialchars($ticket['event_title'] ?? '') ?>"
+                 data-venue="<?= htmlspecialchars($ticket['venue'] ?? '') ?>"
+                 data-eventdate="<?= !empty($ticket['date_time']) ? strtotime($ticket['date_time']) : '' ?>"
+                 data-ticketid="<?= (int)$ticket['id'] ?>"
+                 data-status="<?= $ticket['is_scanned'] ? 'Used' : 'Valid' ?>"
+                 data-search="#<?= (int)$ticket['id'] ?> <?= htmlspecialchars($ticket['qr_code_hash'] ?? '') ?>">
                 <div class="card h-100">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <span class="badge bg-<?= $ticket['is_scanned'] ? 'danger' : 'success' ?>">
@@ -49,5 +58,6 @@
                 </div>
             </div>
         <?php endforeach; ?>
+    </div>
     </div>
 <?php endif; ?>

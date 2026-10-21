@@ -3,6 +3,7 @@ namespace app\controllers;
 
 use app\models\User;
 use app\core\BaseController;
+use app\helpers\Validator;
 
 class AuthController extends BaseController {
 
@@ -69,8 +70,20 @@ class AuthController extends BaseController {
             $firstName = $_POST['first_name'] ?? '';
             $lastName = $_POST['last_name'] ?? '';
 
-            // Validate passwords match
-            if ($password !== $confirm_password) {
+            $username = trim($username);
+            $firstName = trim($firstName);
+            $lastName = trim($lastName);
+            if (!in_array($role, ['attendee', 'organizer'], true)) {
+                $role = 'attendee';
+            }
+
+            // Validate username / first name / surname (must not be numbers only)
+            $identityErrors = Validator::identityErrors($username, $firstName, $lastName);
+
+            if (!empty($identityErrors)) {
+                $error = implode('<br>', array_map('htmlspecialchars', $identityErrors));
+            } else if ($password !== $confirm_password) {
+                // Validate passwords match
                 $error = "Passwords do not match";
             } else {
                 // Check if email already exists
@@ -98,6 +111,7 @@ class AuthController extends BaseController {
         $this->render('auth/register', [
             'error' => $error,
             'success' => $success,
+            'formData' => $_POST,
             'title' => 'Register - Smart Ticketing'
         ]);
     }

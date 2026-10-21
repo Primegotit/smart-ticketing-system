@@ -70,29 +70,29 @@
             </div>
         <?php else: ?>
             <div class="table-responsive">
-                <table class="table table-striped">
+                <table class="table table-striped" data-list-tools data-search-placeholder="Search by ticket ID, event, attendee name or email...">
                     <thead>
                         <tr>
-                            <th>Ticket ID</th>
-                            <th>Event</th>
-                            <th>Attendee</th>
-                            <th>Purchase Date</th>
-                            <th>Status</th>
-                            <th>Actions</th>
+                            <th data-type="number">Ticket ID</th>
+                            <th data-type="text" data-filter>Event</th>
+                            <th data-type="text">Attendee</th>
+                            <th data-type="date" data-filter="range">Purchase Date</th>
+                            <th data-type="text" data-filter>Status</th>
+                            <th data-type="none">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php foreach ($tickets as $ticket): ?>
                             <tr>
-                                <td>#<?= $ticket['id'] ?></td>
+                                <td data-value="<?= (int)$ticket['id'] ?>">#<?= $ticket['id'] ?></td>
                                 <td><?= htmlspecialchars($ticket['event_title']) ?></td>
-                                <td>
+                                <td data-value="<?= htmlspecialchars($ticket['first_name'] . ' ' . $ticket['last_name']) ?>">
                                     <?= htmlspecialchars($ticket['first_name'] . ' ' . $ticket['last_name']) ?>
                                     <br>
                                     <small class="text-muted"><?= htmlspecialchars($ticket['email']) ?></small>
                                 </td>
-                                <td><?= date('M j, Y', strtotime($ticket['created_at'])) ?></td>
-                                <td>
+                                <td data-value="<?= strtotime($ticket['created_at']) ?>"><?= date('M j, Y', strtotime($ticket['created_at'])) ?></td>
+                                <td data-value="<?= $ticket['is_scanned'] ? 'Scanned' : 'Not Scanned' ?>">
                                     <span class="badge bg-<?= $ticket['is_scanned'] ? 'success' : 'secondary' ?>">
                                         <?= $ticket['is_scanned'] ? 'Scanned' : 'Not Scanned' ?>
                                     </span>

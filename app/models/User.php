@@ -45,15 +45,6 @@ class User {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function findByUsername($username) {
-        $sql = "SELECT * FROM users WHERE username = :username LIMIT 1";
-        $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':username', $username);
-        $stmt->execute();
-        
-        return $stmt->fetch(PDO::FETCH_ASSOC);
-    }
-
     public function findById($id) {
         $sql = "SELECT * FROM users WHERE id = :id LIMIT 1";
         $stmt = $this->db->prepare($sql);
@@ -119,7 +110,7 @@ class User {
 
     // In app/models/User.php
     public function getAllByAdmin() {
-        $sql = "SELECT id, first_name, last_name, email, role, status, created_at 
+        $sql = "SELECT id, username, first_name, last_name, email, role, status, created_at 
                 FROM users 
                 ORDER BY created_at DESC";
         $stmt = $this->db->prepare($sql);
@@ -204,10 +195,11 @@ class User {
 
 
     public function createByAdmin($data) {
-        $sql = "INSERT INTO users (first_name, last_name, email, password, role, status) 
-                VALUES (:first_name, :last_name, :email, :password, :role, :status)";
+        $sql = "INSERT INTO users (username, first_name, last_name, email, password, role, status) 
+                VALUES (:username, :first_name, :last_name, :email, :password, :role, :status)";
         
         $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':username', $data['username']);
         $stmt->bindParam(':first_name', $data['first_name']);
         $stmt->bindParam(':last_name', $data['last_name']);
         $stmt->bindParam(':email', $data['email']);

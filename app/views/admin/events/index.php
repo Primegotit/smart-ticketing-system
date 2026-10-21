@@ -72,41 +72,41 @@
             </div>
         <?php else: ?>
             <div class="table-responsive">
-                <table class="table table-striped">
+                <table class="table table-striped" data-list-tools data-search-placeholder="Search by event, organizer, venue, category, status...">
                     <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>Event</th>
-                            <th>Organizer</th>
-                            <th>Date & Time</th>
-                            <th>Venue</th>
-                            <th>Tickets</th>
-                            <th>Status</th>
-                            <th>Actions</th>
+                            <th data-type="number">ID</th>
+                            <th data-type="text" data-filter="Category">Event</th>
+                            <th data-type="text" data-filter>Organizer</th>
+                            <th data-type="date" data-filter="range">Date & Time</th>
+                            <th data-type="text">Venue</th>
+                            <th data-type="number">Tickets</th>
+                            <th data-type="text" data-filter>Status</th>
+                            <th data-type="none">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php foreach ($events as $event): ?>
                             <tr>
-                                <td><?= $event['id'] ?></td>
-                                <td>
+                                <td data-value="<?= (int)$event['id'] ?>"><?= $event['id'] ?></td>
+                                <td data-value="<?= htmlspecialchars($event['title']) ?>" data-filter-value="<?= htmlspecialchars($event['category_name'] ?? 'Uncategorized') ?>">
                                     <strong><?= htmlspecialchars($event['title']) ?></strong>
                                     <br>
                                     <small class="text-muted"><?= htmlspecialchars($event['category_name'] ?? 'Uncategorized') ?></small>
                                 </td>
-                                <td><?= htmlspecialchars($event['first_name'] . ' ' . $event['last_name']) ?></td>
-                                <td>
+                                <td data-value="<?= htmlspecialchars($event['first_name'] . ' ' . $event['last_name']) ?>"><?= htmlspecialchars($event['first_name'] . ' ' . $event['last_name']) ?></td>
+                                <td data-value="<?= strtotime($event['date_time']) ?>">
                                     <?= date('M j, Y', strtotime($event['date_time'])) ?>
                                     <br>
                                     <small class="text-muted"><?= date('g:i A', strtotime($event['date_time'])) ?></small>
                                 </td>
                                 <td><?= htmlspecialchars($event['venue']) ?></td>
-                                <td>
+                                <td data-value="<?= (int)$event['tickets_sold'] ?>">
                                     <span class="badge bg-<?= ($event['total_tickets'] - $event['tickets_sold']) > 0 ? 'success' : 'secondary' ?>">
                                         <?= $event['tickets_sold'] ?> / <?= $event['total_tickets'] ?>
                                     </span>
                                 </td>
-                                <td>
+                                <td data-value="<?= htmlspecialchars(ucfirst($event['status'])) ?>">
                                     <?php if ($event['status'] === 'pending'): ?>
                                         <span class="badge bg-warning">Pending</span>
                                     <?php elseif ($event['status'] === 'approved'): ?>

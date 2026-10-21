@@ -71,7 +71,7 @@
                     <tbody>
                         <?php foreach ($transactions as $transaction): ?>
                             <tr>
-                                <td>#<?= $transaction['id'] ?></td>
+                                <td>#<?= $transaction['id'] ?></td> 
                                 <td><?= htmlspecialchars($transaction['event_title']) ?></td>
                                 <td>
                                     <?= htmlspecialchars($transaction['first_name'] . ' ' . $transaction['last_name']) ?>

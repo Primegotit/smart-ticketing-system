@@ -28,13 +28,19 @@
 
                 <form action="<?= BASE_URL ?>/admin/users/store" method="POST">
                     <div class="mb-3">
+                        <label for="username" class="form-label">Username</label>
+                        <input type="text" class="form-control" id="username" name="username" value="<?= isset($formData['username']) ? htmlspecialchars($formData['username']) : '' ?>" minlength="3" maxlength="50" pattern="(?=.*\p{L})[\p{L}0-9._\-]+" title="3-50 characters: letters, numbers, dots, underscores, hyphens. Must contain at least one letter (not numbers only)." required>
+                        <div class="form-text">Letters, numbers, dots, underscores or hyphens. Cannot be numbers only.</div>
+                    </div>
+
+                    <div class="mb-3">
                         <label for="first_name" class="form-label">First Name</label>
-                        <input type="text" class="form-control" id="first_name" name="first_name" value="<?= isset($formData['first_name']) ? htmlspecialchars($formData['first_name']) : '' ?>" required>
+                        <input type="text" class="form-control" id="first_name" name="first_name" value="<?= isset($formData['first_name']) ? htmlspecialchars($formData['first_name']) : '' ?>" maxlength="50" pattern="[\p{L}][\p{L}\s.'\-]*" title="Letters only. Cannot be numbers only." required>
                     </div>
 
                     <div class="mb-3">
                         <label for="last_name" class="form-label">Last Name</label>
-                        <input type="text" class="form-control" id="last_name" name="last_name" value="<?= isset($formData['last_name']) ? htmlspecialchars($formData['last_name']) : '' ?>" required>
+                        <input type="text" class="form-control" id="last_name" name="last_name" value="<?= isset($formData['last_name']) ? htmlspecialchars($formData['last_name']) : '' ?>" maxlength="50" pattern="[\p{L}][\p{L}\s.'\-]*" title="Letters only. Cannot be numbers only." required>
                     </div>
 
                     <div class="mb-3">

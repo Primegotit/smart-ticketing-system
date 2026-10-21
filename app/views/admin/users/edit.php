@@ -29,12 +29,12 @@
                 <form action="<?= BASE_URL ?>/admin/users/update/<?= $user['id'] ?>" method="POST">
                     <div class="mb-3">
                         <label for="first_name" class="form-label">First Name</label>
-                        <input type="text" class="form-control" id="first_name" name="first_name" value="<?= htmlspecialchars($user['first_name']) ?>" required>
+                        <input type="text" class="form-control" id="first_name" name="first_name" value="<?= htmlspecialchars($user['first_name']) ?>" maxlength="50" pattern="[\p{L}][\p{L}\s.'\-]*" title="Letters only. Cannot be numbers only." required>
                     </div>
 
                     <div class="mb-3">
                         <label for="last_name" class="form-label">Last Name</label>
-                        <input type="text" class="form-control" id="last_name" name="last_name" value="<?= htmlspecialchars($user['last_name']) ?>" required>
+                        <input type="text" class="form-control" id="last_name" name="last_name" value="<?= htmlspecialchars($user['last_name']) ?>" maxlength="50" pattern="[\p{L}][\p{L}\s.'\-]*" title="Letters only. Cannot be numbers only." required>
                     </div>
 
                     <div class="mb-3">

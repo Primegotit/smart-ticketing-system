@@ -24,35 +24,38 @@
             </div>
         <?php else: ?>
             <div class="table-responsive">
-                <table class="table table-striped">
+                <table class="table table-striped" data-list-tools data-search-placeholder="Search by name, username, email, role, status...">
                     <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Role</th>
-                            <th>Status</th>
-                            <th>Joined</th>
-                            <th>Actions</th>
+                            <th data-type="number">ID</th>
+                            <th data-type="text">Name</th>
+                            <th data-type="text">Email</th>
+                            <th data-type="text" data-filter>Role</th>
+                            <th data-type="text" data-filter>Status</th>
+                            <th data-type="date" data-filter="range">Joined</th>
+                            <th data-type="none">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php foreach ($users as $user): ?>
                             <tr>
-                                <td>#<?= $user['id'] ?></td>
-                                <td><?= htmlspecialchars($user['first_name'] . ' ' . $user['last_name']) ?></td>
+                                <td data-value="<?= (int)$user['id'] ?>">#<?= $user['id'] ?></td>
+                                <td data-value="<?= htmlspecialchars($user['first_name'] . ' ' . $user['last_name']) ?>">
+                                    <?= htmlspecialchars($user['first_name'] . ' ' . $user['last_name']) ?>
+                                    <?php if (!empty($user['username'])): ?><br><small class="text-muted">@<?= htmlspecialchars($user['username']) ?></small><?php endif; ?>
+                                </td>
                                 <td><?= htmlspecialchars($user['email']) ?></td>
-                                <td>
+                                <td data-value="<?= htmlspecialchars($user['role']) ?>">
                                     <span class="badge bg-<?= $user['role'] === 'admin' ? 'danger' : ($user['role'] === 'organizer' ? 'primary' : 'secondary') ?>">
                                         <?= ucfirst($user['role']) ?>
                                     </span>
                                 </td>
-                                <td>
+                                <td data-value="<?= htmlspecialchars($user['status']) ?>">
                                     <span class="badge bg-<?= $user['status'] === 'active' ? 'success' : ($user['status'] === 'suspended' ? 'danger' : 'warning') ?>">
                                         <?= ucfirst($user['status']) ?>
                                     </span>
                                 </td>
-                                <td><?= date('M j, Y', strtotime($user['created_at'])) ?></td>
+                                <td data-value="<?= strtotime($user['created_at']) ?>"><?= date('M j, Y', strtotime($user['created_at'])) ?></td>
                                 <td>
                                     <a href="<?= BASE_URL ?>/admin/users/view/<?= $user['id'] ?>" class="btn btn-sm btn-outline-primary">
                                         <i class="bi bi-eye"></i> View

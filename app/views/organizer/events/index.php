@@ -13,6 +13,7 @@
     <div class="alert alert-danger"><?= htmlspecialchars($_GET['error']) ?></div>
 <?php endif; ?>
 
+<div<?= !empty($events) ? ' data-list-cards data-search-placeholder="Search by title, venue, category, description..." data-sorts=\'[{"key":"date","label":"Event date","type":"date"},{"key":"title","label":"Title","type":"text"},{"key":"price","label":"Price","type":"number"},{"key":"sold","label":"Tickets sold","type":"number"},{"key":"revenue","label":"Revenue","type":"number"},{"key":"venue","label":"Venue","type":"text"}]\' data-filters=\'[{"key":"status","label":"Status"},{"key":"category","label":"Category"},{"key":"date","label":"Event date","range":true}]\'' : '' ?>>
 <div class="row">
     <?php if (empty($events)): ?>
         <div class="col-12">
@@ -22,7 +23,15 @@
         </div>
     <?php else: ?>
         <?php foreach ($events as $event): ?>
-            <div class="col-md-6 col-lg-4 mb-4">
+            <div class="col-md-6 col-lg-4 mb-4" data-item
+                 data-title="<?= htmlspecialchars($event['title']) ?>"
+                 data-venue="<?= htmlspecialchars($event['venue']) ?>"
+                 data-date="<?= strtotime($event['date_time']) ?>"
+                 data-price="<?= (float)$event['price'] ?>"
+                 data-sold="<?= (int)$event['tickets_sold_count'] ?>"
+                 data-revenue="<?= (float)($event['total_revenue'] ?? 0) ?>"
+                 data-status="<?= htmlspecialchars(ucfirst($event['status'])) ?>"
+                 data-category="<?= htmlspecialchars($event['category_name'] ?? 'Uncategorized') ?>">
                 <div class="card h-100">
                     <?php if ($event['event_image']): ?>
                         <img src="<?= BASE_URL . '/' . $event['event_image'] ?>" class="card-img-top" alt="<?= htmlspecialchars($event['title']) ?>" style="height: 200px; object-fit: cover;">
@@ -80,4 +89,5 @@
             </div>
         <?php endforeach; ?>
     <?php endif; ?>
+</div>
 </div>

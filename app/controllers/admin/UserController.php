@@ -4,6 +4,7 @@ namespace app\controllers\admin;
 use app\models\User;
 use app\core\BaseController;
 use app\core\AuthMiddleware;
+use app\helpers\Validator;
 
 class UserController extends BaseController {
 
@@ -83,9 +84,9 @@ class UserController extends BaseController {
             // Validate input
             $errors = [];
             
-            if (empty($firstName) || empty($lastName)) {
-                $errors[] = 'First name and last name are required.';
-            }
+            $firstName = trim($firstName);
+            $lastName = trim($lastName);
+            $errors = array_merge($errors, Validator::identityErrors('', $firstName, $lastName, false));
             
             if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 $errors[] = 'Valid email is required.';
@@ -164,8 +165,9 @@ class UserController extends BaseController {
 
     public function store() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $firstName = $_POST['first_name'] ?? '';
-            $lastName = $_POST['last_name'] ?? '';
+            $username = trim($_POST['username'] ?? '');
+            $firstName = trim($_POST['first_name'] ?? '');
+            $lastName = trim($_POST['last_name'] ?? '');
             $email = $_POST['email'] ?? '';
             $role = $_POST['role'] ?? 'attendee';
             $password = $_POST['password'] ?? '';
@@ -174,9 +176,7 @@ class UserController extends BaseController {
             // Validate input
             $errors = [];
             
-            if (empty($firstName) || empty($lastName)) {
-                $errors[] = 'First name and last name are required.';
-            }
+            $errors = array_merge($errors, Validator::identityErrors($username, $firstName, $lastName));
             
             if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 $errors[] = 'Valid email is required.';
@@ -205,6 +205,16 @@ class UserController extends BaseController {
 
             $userModel = new User();
             
+            // Check if username already exists
+            if ($userModel->usernameExists($username)) {
+                $this->render('admin/users/create', [
+                    'title' => 'Create User - Smart Ticketing',
+                    'error' => 'Username already taken.',
+                    'formData' => $_POST
+                ]);
+                return;
+            }
+
             // Check if email already exists
             if ($userModel->getByEmail($email)) {
                 $this->render('admin/users/create', [
@@ -217,6 +227,7 @@ class UserController extends BaseController {
 
             // Create user
             $success = $userModel->createByAdmin([
+                'username' => $username,
                 'first_name' => $firstName,
                 'last_name' => $lastName,
                 'email' => $email,
